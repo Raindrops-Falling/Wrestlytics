@@ -1,16 +1,42 @@
 <!doctype html>
-<html lang="<!-- figma:lang -->">
+<html lang="en">
   <head>
-    <!-- figma:head-start -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><!-- figma:title --></title>
-    <!-- figma:head-end -->
+    <title>Wrestlytics — Wrestling Intelligence</title>
+    <meta
+      name="description"
+      content="Wrestlytics builds computer vision software for wrestling — detection, event tracking, match analytics, and team-level data. The infrastructure the sport has never had."
+    />
+
+    <!--
+      Favicon — drop a favicon.ico (or favicon.png / .svg) into your /public
+      folder, then point this at it. If you don't have one yet, this line
+      is safe to leave as-is (browsers just fall back to a default icon).
+    -->
+    <link rel="icon" href="/favicon.ico" />
+
+    <!--
+      Open Graph / social preview image — used when the site is shared on
+      LinkedIn, Twitter/X, iMessage, etc. Drop an image (1200x630px
+      recommended) into /public, e.g. /public/og-image.jpg, then uncomment
+      and update the two lines below.
+    -->
+    <!-- <meta property="og:title" content="Wrestlytics — Wrestling Intelligence" /> -->
+    <!-- <meta property="og:description" content="Computer vision for wrestling — detection, event tracking, match analytics, and team-level data." /> -->
+    <!-- <meta property="og:image" content="/og-image.jpg" /> -->
+    <!-- <meta property="og:type" content="website" /> -->
+
+    <!--
+      If you want a page background image referenced globally (rather than
+      inline in a React component), you'd typically do it via CSS instead
+      of here — e.g. in your global stylesheet:
+        body { background-image: url('/your-image.jpg'); }
+      Drop the file in /public and reference it as /your-image.jpg.
+    -->
   </head>
   <body>
-    <!-- figma:body-start -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- figma:body-end -->
   </body>
 </html>
