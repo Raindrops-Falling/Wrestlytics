@@ -65,11 +65,10 @@ const monoLabel: React.CSSProperties = {
 const sectionWrap: React.CSSProperties = { maxWidth: 1200, margin: "0 auto" };
 const linkedInUrl = "https://www.linkedin.com/in/derek-t-40779a354/";
 const videoProps = {
-  autoPlay: true,
   muted: true,
   loop: true,
   playsInline: true,
-  preload: "auto" as const,
+  preload: "metadata" as const,
 };
 
 const TERMINAL_LINES = [
@@ -134,6 +133,60 @@ function RoadmapTerminal({ minH = 320 }: { minH?: number }) {
   );
 }
 
+function LazyVideo({
+  src,
+  style,
+  poster,
+  autoPlay = true,
+}: {
+  src: string;
+  style?: React.CSSProperties;
+  poster?: string;
+  autoPlay?: boolean;
+}) {
+  const ref = useRef<HTMLVideoElement | null>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const current = ref.current;
+    if (!current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "250px 0px" }
+    );
+
+    observer.observe(current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || !shouldLoad) return;
+
+    if (autoPlay) {
+      video.play().catch(() => undefined);
+    }
+  }, [shouldLoad, autoPlay]);
+
+  return (
+    <video
+      ref={ref}
+      {...videoProps}
+      poster={poster}
+      src={shouldLoad ? src : undefined}
+      autoPlay={shouldLoad && autoPlay}
+      preload={shouldLoad ? "auto" : "metadata"}
+      style={style}
+    />
+  );
+}
+
 export default function J5() {
   const containerRef = useRef<HTMLDivElement>(null);
   useScrollReveal(containerRef as React.RefObject<HTMLElement | null>);
@@ -180,12 +233,12 @@ export default function J5() {
           </div>
           {!isMobile ? (
             <div style={{ position: "relative", overflow: "hidden", minHeight: "100vh" }}>
-              <video {...videoProps} src={asciiMagic5} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.65, pointerEvents: "none" }} />
+              <LazyVideo src={asciiMagic5} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.65, pointerEvents: "none" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #08090a 0%, transparent 30%)", pointerEvents: "none" }} />
             </div>
           ) : (
             <div style={{ position: "relative", height: 240, overflow: "hidden" }}>
-              <video {...videoProps} src={asciiMagic5} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.5, display: "block", pointerEvents: "none" }} />
+              <LazyVideo src={asciiMagic5} poster={mountainImg} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.5, display: "block", pointerEvents: "none" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #08090a 0%, transparent 30%, transparent 70%, #08090a 100%)", pointerEvents: "none" }} />
             </div>
           )}
@@ -194,7 +247,7 @@ export default function J5() {
 
       {/* ─── PROBLEM — video BG, centered text ─── */}
       <section style={{ position: "relative", overflow: "hidden", borderTop: `1px solid ${T.border}` }}>
-        <video {...videoProps} src={asciiAnim4} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 1, pointerEvents: "none" }} />
+        <LazyVideo src={asciiAnim4} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 1, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.88)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, ...sectionWrap, textAlign: "center", padding: "96px 40px" }}>
           <h2 data-reveal="up" style={{ fontSize: "clamp(36px,5vw,52px)", fontWeight: 510, letterSpacing: "-0.022em", lineHeight: 1.1, color: T.white, margin: "0 auto 24px", maxWidth: 700 }}>
@@ -222,14 +275,14 @@ export default function J5() {
             </p>
           </div>
           <div data-reveal="up" style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${T.border}`, aspectRatio: "16/9" }}>
-            <video {...videoProps} src={annotatedVideo2} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <LazyVideo src={annotatedVideo2} poster={mountainImg} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           </div>
         </div>
       </section>
 
       {/* ─── DETECTING IN REAL TIME — terminal on RIGHT, no video ─── */}
       <section style={{ position: "relative" }}>
-        <video {...videoProps} src={asciiMagic4} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
+        <LazyVideo src={asciiMagic4} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.92)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, padding: "96px 40px" }}>
           <div style={{ ...sectionWrap, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "start" }}>
@@ -299,7 +352,7 @@ export default function J5() {
           </div>
           {/* right: annotated video (the "associated video" from Detecting section) */}
           <div style={{ position: "relative", overflow: "hidden", minHeight: isMobile ? 280 : 520 }}>
-            <video {...videoProps} src={annotatedVideo1} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", pointerEvents: "none" }} />
+            <LazyVideo src={annotatedVideo1} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", pointerEvents: "none" }} />
             <div style={{ position: "absolute", inset: 0, background: isMobile ? "linear-gradient(to bottom, #08090a 0%, transparent 20%, transparent 80%, #08090a 100%)" : "linear-gradient(to right, #08090a 0%, transparent 30%)", pointerEvents: "none" }} />
           </div>
         </div>
@@ -307,7 +360,7 @@ export default function J5() {
 
       {/* ─── STARTED AT ZERO — numbered list LEFT, text RIGHT ─── */}
       <section style={{ position: "relative", overflow: "hidden", minHeight: 400, display: "flex", alignItems: "center" }}>
-        <video {...videoProps} src={asciiAnim1} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.12, pointerEvents: "none" }} />
+        <LazyVideo src={asciiAnim1} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.12, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.92)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, ...sectionWrap, padding: "96px 40px", width: "100%" }}>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "start" }}>
@@ -359,7 +412,7 @@ export default function J5() {
 
       {/* ─── WRESTLING IS UNSOLVED ─── */}
       <section style={{ position: "relative", overflow: "hidden", minHeight: 560, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <video {...videoProps} src={asciiAnim3} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.6, pointerEvents: "none" }} />
+        <LazyVideo src={asciiAnim3} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.6, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.88)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "80px 24px" : "80px 40px" }}>
           <h2 data-reveal="up" style={{ fontSize: "clamp(40px,7vw,80px)", fontWeight: 510, letterSpacing: "-0.026em", color: T.white, margin: 0 }}>
