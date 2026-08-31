@@ -393,28 +393,34 @@ export default function J5() {
           <p style={{ fontSize: 17, color: T.muted, lineHeight: 1.65, marginTop: 20, marginBottom: 0 }}>
             Join the advancement of wrestling.
           </p>
-          <div style={{ marginTop: 40 }}>
-            {submitted ? (
-              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <p style={{ fontSize: 18, color: T.white, fontWeight: 500, margin: 0 }}>You&apos;re on the list.</p>
-                <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ marginTop: 40, minHeight: 60, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
+            <div style={{
+              transform: submitted ? "translateY(28px)" : "translateY(0px)",
+              transition: "transform 0.3s ease",
+              display: "flex", gap: 12, justifyContent: "center", alignItems: "center", flexWrap: "wrap",
+            }}>
+              {submitted ? (
+                <>
+                  <p style={{ fontSize: 18, color: T.white, fontWeight: 500, margin: 0 }}>You&apos;re on the list.</p>
+                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                     My LinkedIn
                   </a>
-              </div>
-            ) : (
-              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required
-                    style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 6, padding: "14px 20px", fontSize: 15, color: T.white, fontFamily: "Inter, sans-serif", width: isMobile ? "100%" : 280, outline: "none" }} />
-                  <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", whiteSpace: "nowrap" }}>
-                    Join the Waitlist
-                  </button>
-                </form>
-                <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                </>
+              ) : (
+                <>
+                  <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required
+                      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 6, padding: "14px 20px", fontSize: 15, color: T.white, fontFamily: "Inter, sans-serif", width: isMobile ? "100%" : 280, outline: "none" }} />
+                    <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", whiteSpace: "nowrap" }}>
+                      Join the Waitlist
+                    </button>
+                  </form>
+                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
                     My LinkedIn
                   </a>
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </section>
