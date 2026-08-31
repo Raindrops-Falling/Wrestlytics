@@ -12,10 +12,18 @@ const iso = (x: number, y: number, z: number) => {
   return { x: (x - z) * Math.cos(a), y: y + (x + z) * Math.sin(a) };
 };
 
+/* ─── dpr line-width compensation ───
+   Hairline strokes (lineWidth ~1) anti-alias thinner/fainter on standard-DPI
+   desktop screens (dpr 1) than on high-DPI mobile screens (dpr 2-3), because
+   the same 1 CSS-px stroke covers fewer physical pixels to blend across.
+   This factor boosts lineWidth on low-dpr screens so strokes read as
+   consistently opaque everywhere. */
+const dprCompFor = (dpr: number) => (dpr < 1.5 ? 1.6 : dpr < 2 ? 1.2 : 1);
+
 /* ─── canvas loop: draw is stored in a ref so it never re-triggers the effect ─── */
 function useCanvasLoop(
   ref: RefObject<HTMLCanvasElement | null>,
-  draw: (ctx: CanvasRenderingContext2D, t: number, w: number, h: number) => void
+  draw: (ctx: CanvasRenderingContext2D, t: number, w: number, h: number, dprComp: number) => void
 ) {
   const drawRef = useRef(draw);
   drawRef.current = draw;
@@ -24,11 +32,12 @@ function useCanvasLoop(
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { alpha: true })!;
-    let w = 0, h = 0, t = 0, raf = 0;
+    let w = 0, h = 0, t = 0, raf = 0, dprComp = 1;
 
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect() ?? canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
+      dprComp = dprCompFor(dpr);
       w = Math.max(rect.width, 1); h = Math.max(rect.height, 1);
       canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -42,7 +51,7 @@ function useCanvasLoop(
         ctx.clearRect(0, 0, w, h);
         ctx.save();
         ctx.translate(w / 2, h / 2 + 5);
-        drawRef.current(ctx, t, w, h);
+        drawRef.current(ctx, t, w, h, dprComp);
         ctx.restore();
       }
       raf = requestAnimationFrame(loop);
@@ -59,8 +68,12 @@ export function BgWavesCanvas({ opacity = 0.35 }: { opacity?: number }) {
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { alpha: true })!;
-    let bw = 0, bh = 0, bgT = 0, raf = 0;
-    const resize = () => { bw = window.innerWidth; bh = window.innerHeight; canvas.width = bw; canvas.height = bh; };
+    let bw = 0, bh = 0, bgT = 0, raf = 0, dprComp = 1;
+    const resize = () => {
+      bw = window.innerWidth; bh = window.innerHeight;
+      canvas.width = bw; canvas.height = bh;
+      dprComp = dprCompFor(window.devicePixelRatio || 1);
+    };
     window.addEventListener("resize", resize);
     resize();
     const drawBg = () => {
@@ -69,7 +82,7 @@ export function BgWavesCanvas({ opacity = 0.35 }: { opacity?: number }) {
       ctx.save();
       ctx.translate(bw / 2, bh / 2 + 150);
       const cols = 32, rows = 22, sp = 65;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1 * dprComp;
       for (let z = 0; z < rows; z++) {
         for (let x = 0; x < cols; x++) {
           const px = (x - cols / 2) * sp, pz = z * sp;
@@ -99,9 +112,9 @@ export function BgWavesCanvas({ opacity = 0.35 }: { opacity?: number }) {
 /* ─── LayersCanvas: floating isometric planes (white) ─── */
 export function LayersCanvas({ style }: { style?: React.CSSProperties }) {
   const ref = useRef<HTMLCanvasElement>(null);
-  const draw = useCallback((ctx: CanvasRenderingContext2D, t: number) => {
+  const draw = useCallback((ctx: CanvasRenderingContext2D, t: number, _w: number, _h: number, dprComp: number = 1) => {
     const size = 42, layers = 5, gap = 20;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1 * dprComp;
     for (let i = layers - 1; i >= 0; i--) {
       const yOff = i * gap - (layers * gap) / 2 + Math.sin(t + i * 0.4) * 4;
       const p1 = iso(-size, yOff, -size), p2 = iso(size, yOff, -size);
@@ -118,6 +131,7 @@ export function LayersCanvas({ style }: { style?: React.CSSProperties }) {
         const sq = size * 0.55;
         ctx.beginPath(); ctx.rect(-sq, -sq, sq * 2, sq * 2);
         ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.stroke(); ctx.clip();
+        ctx.lineWidth = 1 * dprComp;
         for (let j = -sq; j < sq; j += 4) {
           ctx.beginPath(); ctx.moveTo(-sq, j); ctx.lineTo(sq, j);
           ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.stroke();
@@ -141,12 +155,12 @@ export function LayersCanvas({ style }: { style?: React.CSSProperties }) {
 /* ─── NodesCanvas: floating isometric cubes (white) ─── */
 export function NodesCanvas({ style }: { style?: React.CSSProperties }) {
   const ref = useRef<HTMLCanvasElement>(null);
-  const drawCube = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number, z: number, s: number, color: string) => {
+  const drawCube = useCallback((ctx: CanvasRenderingContext2D, x: number, y: number, z: number, s: number, color: string, dprComp: number = 1) => {
     const pts = [
       iso(x-s,y-s,z-s), iso(x+s,y-s,z-s), iso(x+s,y-s,z+s), iso(x-s,y-s,z+s),
       iso(x-s,y+s,z-s), iso(x+s,y+s,z-s), iso(x+s,y+s,z+s), iso(x-s,y+s,z+s),
     ];
-    ctx.strokeStyle = color; ctx.lineWidth = 1;
+    ctx.strokeStyle = color; ctx.lineWidth = 1 * dprComp;
     ctx.beginPath();
     ctx.moveTo(pts[0].x,pts[0].y); ctx.lineTo(pts[1].x,pts[1].y);
     ctx.lineTo(pts[2].x,pts[2].y); ctx.lineTo(pts[3].x,pts[3].y); ctx.closePath();
@@ -155,13 +169,13 @@ export function NodesCanvas({ style }: { style?: React.CSSProperties }) {
     [0,1,2,3].forEach(i => { ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[i+4].x,pts[i+4].y); });
     ctx.stroke();
   }, []);
-  const draw = useCallback((ctx: CanvasRenderingContext2D, t: number) => {
+  const draw = useCallback((ctx: CanvasRenderingContext2D, t: number, _w: number, _h: number, dprComp: number = 1) => {
     const s = 22, f = Math.sin(t) * 4;
-    drawCube(ctx, -35, -f, -35, s, "rgba(255,255,255,0.12)");
-    drawCube(ctx, 35, f, -35, s, "rgba(255,255,255,0.12)");
-    drawCube(ctx, -35, f, 35, s, "rgba(255,255,255,0.12)");
-    drawCube(ctx, 35, -f, 35, s, "rgba(255,255,255,0.12)");
-    drawCube(ctx, 0, Math.cos(t)*6-15, 0, s*0.9, "rgba(255,255,255,0.65)");
+    drawCube(ctx, -35, -f, -35, s, "rgba(255,255,255,0.12)", dprComp);
+    drawCube(ctx, 35, f, -35, s, "rgba(255,255,255,0.12)", dprComp);
+    drawCube(ctx, -35, f, 35, s, "rgba(255,255,255,0.12)", dprComp);
+    drawCube(ctx, 35, -f, 35, s, "rgba(255,255,255,0.12)", dprComp);
+    drawCube(ctx, 0, Math.cos(t)*6-15, 0, s*0.9, "rgba(255,255,255,0.65)", dprComp);
   }, [drawCube]);
   useCanvasLoop(ref, draw);
   return <canvas ref={ref} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", ...style }} />;
@@ -170,9 +184,9 @@ export function NodesCanvas({ style }: { style?: React.CSSProperties }) {
 /* ─── FlowCanvas: isometric terrain mesh (white) ─── */
 export function FlowCanvas({ style }: { style?: React.CSSProperties }) {
   const ref = useRef<HTMLCanvasElement>(null);
-  const draw = useCallback((ctx: CanvasRenderingContext2D, t: number) => {
+  const draw = useCallback((ctx: CanvasRenderingContext2D, t: number, _w: number, _h: number, dprComp: number = 1) => {
     const size = 65, segs = 22, step = (size * 2) / segs;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1 * dprComp;
     const getH = (x: number, z: number) => {
       const dist = Math.sqrt(x*x+z*z);
       const peak = Math.max(0, 45-dist*1.1);
@@ -206,7 +220,7 @@ export function WireframeCanvas({ shape = "cube", color = "255,255,255", style }
     const canvas = ref.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
-    let w = 0, h = 0, cx = 0, cy = 0, angleX = 0, angleY = 0, raf = 0;
+    let w = 0, h = 0, cx = 0, cy = 0, angleX = 0, angleY = 0, raf = 0, dprComp = 1;
     const pts: { x: number; y: number; z: number }[] = [];
     const edges: [number, number][] = [];
 
@@ -251,6 +265,7 @@ export function WireframeCanvas({ shape = "cube", color = "255,255,255", style }
     const resize = () => {
       const rect = canvas.parentElement?.getBoundingClientRect() ?? canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
+      dprComp = dprCompFor(dpr);
       w = Math.max(rect.width, 1); h = Math.max(rect.height, 1);
       canvas.width = w*dpr; canvas.height = h*dpr;
       ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -272,7 +287,7 @@ export function WireframeCanvas({ shape = "cube", color = "255,255,255", style }
       ctx.clearRect(0,0,w,h);
       angleY+=0.005; angleX+=0.002;
       const projected=pts.map(p=>project(p));
-      ctx.lineWidth=0.7;
+      ctx.lineWidth=0.7 * dprComp;
       edges.forEach(([i,j])=>{
         const p1=projected[i],p2=projected[j];
         const alpha=Math.max(0.04,(1-(p1.z+p2.z)/2/160)*0.45);

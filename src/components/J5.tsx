@@ -6,16 +6,16 @@ import {
   useScrollReveal,
 } from "@/components/shared/Canvases";
 
-import asciiMagic6 from "@/imports/ascii-magic-6.mp4";
-import asciiMagic5 from "@/imports/ascii-magic-5-1.mp4";
-import asciiMagic4 from "@/imports/ascii-magic-4-1.mp4";
-import asciiAnim1 from "@/imports/ascii-animation__1_.mp4";
-import asciiAnim3 from "@/imports/ascii-animation__3_.mp4";
-import asciiAnim4 from "@/imports/ascii-animation__4_-1.mp4";
+import { supabase } from "@/lib/supabase";
 
-import mountainImg from "@/imports/images__19_-1.jpg";
-import annotatedVideo2 from "@/imports/annotated_video_h264__2_-1.mp4";
-import annotatedVideo1 from "@/imports/annotated_video_h264__3_.mp4";
+const asciiMagic5 = "https://pub-9660dda224dc4727bc1eadab5cf0a535.r2.dev/ascii-magic-5.mp4";
+const asciiAnim3 = "https://pub-9660dda224dc4727bc1eadab5cf0a535.r2.dev/ascii-animation%20%283%29.mp4";
+
+const mountainImg = "https://pub-9660dda224dc4727bc1eadab5cf0a535.r2.dev/images%20%2819%29.jpg";
+const annotatedVideo2 = "https://pub-9660dda224dc4727bc1eadab5cf0a535.r2.dev/annotated_video_h264%20%283%29.mp4";
+
+const annotatedVideo1 = "https://pub-9660dda224dc4727bc1eadab5cf0a535.r2.dev/annotated_video_h264%20%282%29.mp4";
+
 
 /* ─── tokens ─── */
 const T = {
@@ -65,10 +65,11 @@ const monoLabel: React.CSSProperties = {
 const sectionWrap: React.CSSProperties = { maxWidth: 1200, margin: "0 auto" };
 const linkedInUrl = "https://www.linkedin.com/in/derek-t-40779a354/";
 const videoProps = {
+  autoPlay: true,
   muted: true,
   loop: true,
   playsInline: true,
-  preload: "metadata" as const,
+  preload: "auto" as const,
 };
 
 const TERMINAL_LINES = [
@@ -133,83 +134,42 @@ function RoadmapTerminal({ minH = 320 }: { minH?: number }) {
   );
 }
 
-function LazyVideo({
-  src,
-  style,
-  poster,
-  autoPlay = true,
-}: {
-  src: string;
-  style?: React.CSSProperties;
-  poster?: string;
-  autoPlay?: boolean;
-}) {
-  const ref = useRef<HTMLVideoElement | null>(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
-
-  useEffect(() => {
-    const current = ref.current;
-    if (!current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoad(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "250px 0px" }
-    );
-
-    observer.observe(current);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const video = ref.current;
-    if (!video || !shouldLoad) return;
-
-    if (autoPlay) {
-      video.play().catch(() => undefined);
-    }
-  }, [shouldLoad, autoPlay]);
-
-  return (
-    <video
-      ref={ref}
-      {...videoProps}
-      poster={poster}
-      src={shouldLoad ? src : undefined}
-      autoPlay={shouldLoad && autoPlay}
-      preload={shouldLoad ? "auto" : "metadata"}
-      style={style}
-    />
-  );
-}
-
 export default function J5() {
   const containerRef = useRef<HTMLDivElement>(null);
   useScrollReveal(containerRef as React.RefObject<HTMLElement | null>);
   const isMobile = useIsMobile();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  function handleSubmit(e: React.FormEvent) {
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (email.trim()) setSubmitted(true);
+    if (!email.trim()) return;
+
+    const { error } = await supabase.from("waitlist").insert({ email: email.trim() });
+
+    if (error) {
+      if (error.code === "23505") {
+        setError("That email's already on the list.");
+      } else {
+        setError("Something went wrong — try again.");
+      }
+      return;
+    }
+
+    setError("");
+    setSubmitted(true);
   }
 
   return (
     <div ref={containerRef} style={{ background: T.bg, color: T.body, fontFamily: "Inter, sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
 
       {/* ─── NAV ─── */}
-      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, height: 60, background: T.bg, borderBottom: `1px solid ${T.border}`, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 40px" }}>
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, height: 60, background: T.bg, borderBottom: `1px solid ${T.border}`, zIndex: 100, display: "flex", alignItems: "center", padding: "0 40px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <WrestlyticsLogo size={28} />
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, letterSpacing: "0.1em", color: T.white }}>WRESTLYTICS</span>
         </div>
-        <button style={{ fontFamily: "Inter, sans-serif", fontSize: 13, fontWeight: 500, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.25)`, borderRadius: 20, padding: "7px 18px", cursor: "pointer" }}>
-          Join Waitlist
-        </button>
       </nav>
 
       {/* ─── HERO — 45/55 split ─── */}
@@ -222,23 +182,38 @@ export default function J5() {
             <p style={{ fontSize: 17, color: T.body, lineHeight: 1.65, maxWidth: 460, margin: "18px 0 0" }}>
               We&apos;re building computer vision software for wrestling — detection, event tracking, match analytics, and team-level data. The infrastructure the sport has never had.
             </p>
-            <div style={{ marginTop: 36, display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <button style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "13px 24px", cursor: "pointer" }}>
-                Join the Waitlist
-              </button>
-              <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.25)`, borderRadius: 6, padding: "13px 24px", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                My LinkedIn
-              </a>
+            <div style={{ marginTop: submitted ? 72 : 40 }}>
+              {submitted ? (
+                <div style={{ display: "flex", gap: 12, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
+                  <p style={{ fontSize: 18, color: T.white, fontWeight: 500, margin: 0 }}>You&apos;re on the list.</p>
+                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    My LinkedIn
+                  </a>
+                </div>
+              ) : (
+                <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                  <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required
+                      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 6, padding: "14px 20px", fontSize: 15, color: T.white, fontFamily: "Inter, sans-serif", width: isMobile ? "100%" : 280, outline: "none" }} />
+                    <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", whiteSpace: "nowrap" }}>
+                      Join the Waitlist
+                    </button>
+                  </form>
+                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    My LinkedIn
+                  </a>
+                </div>
+              )}
             </div>
           </div>
           {!isMobile ? (
             <div style={{ position: "relative", overflow: "hidden", minHeight: "100vh" }}>
-              <LazyVideo src={asciiMagic5} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.65, pointerEvents: "none" }} />
+              <video {...videoProps} src={asciiMagic5} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.65, pointerEvents: "none" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #08090a 0%, transparent 30%)", pointerEvents: "none" }} />
             </div>
           ) : (
             <div style={{ position: "relative", height: 240, overflow: "hidden" }}>
-              <LazyVideo src={asciiMagic5} poster={mountainImg} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.5, display: "block", pointerEvents: "none" }} />
+              <video {...videoProps} src={asciiMagic5} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.5, display: "block", pointerEvents: "none" }} />
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #08090a 0%, transparent 30%, transparent 70%, #08090a 100%)", pointerEvents: "none" }} />
             </div>
           )}
@@ -247,7 +222,6 @@ export default function J5() {
 
       {/* ─── PROBLEM — video BG, centered text ─── */}
       <section style={{ position: "relative", overflow: "hidden", borderTop: `1px solid ${T.border}` }}>
-        <LazyVideo src={asciiAnim4} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 1, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.88)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, ...sectionWrap, textAlign: "center", padding: "96px 40px" }}>
           <h2 data-reveal="up" style={{ fontSize: "clamp(36px,5vw,52px)", fontWeight: 510, letterSpacing: "-0.022em", lineHeight: 1.1, color: T.white, margin: "0 auto 24px", maxWidth: 700 }}>
@@ -275,14 +249,13 @@ export default function J5() {
             </p>
           </div>
           <div data-reveal="up" style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${T.border}`, aspectRatio: "16/9" }}>
-            <LazyVideo src={annotatedVideo2} poster={mountainImg} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <video {...videoProps} src={annotatedVideo2} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           </div>
         </div>
       </section>
 
       {/* ─── DETECTING IN REAL TIME — terminal on RIGHT, no video ─── */}
       <section style={{ position: "relative" }}>
-        <LazyVideo src={asciiMagic4} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.18, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.92)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, padding: "96px 40px" }}>
           <div style={{ ...sectionWrap, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "start" }}>
@@ -352,7 +325,7 @@ export default function J5() {
           </div>
           {/* right: annotated video (the "associated video" from Detecting section) */}
           <div style={{ position: "relative", overflow: "hidden", minHeight: isMobile ? 280 : 520 }}>
-            <LazyVideo src={annotatedVideo1} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", pointerEvents: "none" }} />
+            <video {...videoProps} src={annotatedVideo1} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", pointerEvents: "none" }} />
             <div style={{ position: "absolute", inset: 0, background: isMobile ? "linear-gradient(to bottom, #08090a 0%, transparent 20%, transparent 80%, #08090a 100%)" : "linear-gradient(to right, #08090a 0%, transparent 30%)", pointerEvents: "none" }} />
           </div>
         </div>
@@ -360,7 +333,6 @@ export default function J5() {
 
       {/* ─── STARTED AT ZERO — numbered list LEFT, text RIGHT ─── */}
       <section style={{ position: "relative", overflow: "hidden", minHeight: 400, display: "flex", alignItems: "center" }}>
-        <LazyVideo src={asciiAnim1} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", opacity: 0.12, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.92)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, ...sectionWrap, padding: "96px 40px", width: "100%" }}>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "start" }}>
@@ -412,7 +384,7 @@ export default function J5() {
 
       {/* ─── WRESTLING IS UNSOLVED ─── */}
       <section style={{ position: "relative", overflow: "hidden", minHeight: 560, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <LazyVideo src={asciiAnim3} poster={mountainImg} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.6, pointerEvents: "none" }} />
+        <video {...videoProps} src={asciiAnim3} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.6, pointerEvents: "none" }} />
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.88)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: isMobile ? "80px 24px" : "80px 40px" }}>
           <h2 data-reveal="up" style={{ fontSize: "clamp(40px,7vw,80px)", fontWeight: 510, letterSpacing: "-0.026em", color: T.white, margin: 0 }}>
@@ -425,9 +397,9 @@ export default function J5() {
             {submitted ? (
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
                 <p style={{ fontSize: 18, color: T.white, fontWeight: 500, margin: 0 }}>You&apos;re on the list.</p>
-                <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                  My LinkedIn
-                </a>
+                <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    My LinkedIn
+                  </a>
               </div>
             ) : (
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
@@ -438,9 +410,9 @@ export default function J5() {
                     Join the Waitlist
                   </button>
                 </form>
-                <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                  My LinkedIn
-                </a>
+                <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    My LinkedIn
+                  </a>
               </div>
             )}
           </div>
