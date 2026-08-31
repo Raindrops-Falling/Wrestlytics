@@ -1,0 +1,10 @@
+{
+  "description": "Wrestlytics offers advanced analytics for wrestling through computer vision technology, providing insights for athletes and coaches to enhance performance.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
