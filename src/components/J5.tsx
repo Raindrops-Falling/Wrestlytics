@@ -336,7 +336,7 @@ export default function J5() {
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.92)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, ...sectionWrap, padding: "96px 40px", width: "100%" }}>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "start" }}>
-            <div data-reveal="up" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div data-reveal="up" style={{ display: "flex", flexDirection: "column", gap: 16, order: isMobile ? 2 : 1 }}>
               {[
                 { num: "01", text: "Trained exclusively on wrestling footage" },
                 { num: "02", text: "Occlusion as the primary design constraint" },
@@ -348,7 +348,7 @@ export default function J5() {
                 </div>
               ))}
             </div>
-            <div data-reveal="right">
+            <div data-reveal="right" style={{ order: isMobile ? 1 : 2 }}>
               <p style={monoLabel}>OUR APPROACH</p>
               <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 510, letterSpacing: "-0.02em", lineHeight: 1.1, color: T.white, margin: "0 0 20px" }}>
                 We started at zero.
