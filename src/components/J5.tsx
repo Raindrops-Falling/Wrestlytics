@@ -227,12 +227,12 @@ export default function J5() {
       {/* ─── HERO — 45/55 split ─── */}
       <section style={{ position: "relative", minHeight: "100vh", paddingTop: 60, background: T.bg, display: "flex", alignItems: "stretch", overflow: "hidden" }}>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "45fr 55fr", width: "100%", alignItems: "center" }}>
-          <div data-reveal="up" style={{ padding: isMobile ? "80px 32px 52px" : "120px 64px 80px 80px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div data-reveal="up" style={{ padding: isMobile ? "80px 32px 100px" : "120px 64px 80px 80px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <h1 style={{ fontSize: "clamp(48px,5.5vw,76px)", fontWeight: 510, letterSpacing: "-0.026em", lineHeight: 1.05, whiteSpace: "pre-line", color: T.white, margin: 0 }}>
               {"Wrestling\nIntelligence."}
             </h1>
             <p style={{ fontSize: 17, color: T.body, lineHeight: 1.65, maxWidth: 460, margin: "18px 0 0" }}>
-              We&apos;re building computer vision software for wrestling — detection, event tracking, match analytics, and team-level data. The infrastructure the sport has never had.
+              We&apos;re building computer vision software and analytics for wrestling. The infrastructure the sport has never had.
             </p>
             <div style={{ marginTop: submitted ? 72 : 40 }}>
               <WaitlistControls email={email} setEmail={setEmail} submitted={submitted} handleSubmit={handleSubmit} />
