@@ -100,6 +100,58 @@ const ROADMAP_TERMINAL_LINES = [
   { text: "→  status: we are absolutely not done", bright: true },
 ];
 
+function ContactMenu() {
+  return (
+    <details style={{ position: "relative" }}>
+      <summary style={{ listStyle: "none", fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 6, padding: "13px 23px", cursor: "pointer", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+        Contact Me
+      </summary>
+      <div style={{ position: "absolute", zIndex: 10, right: 0, top: "calc(100% + 8px)", minWidth: 150, padding: 6, background: T.card, border: `1px solid ${T.border}`, borderRadius: 6, boxShadow: "0 12px 28px rgba(0,0,0,0.35)" }}>
+        <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", whiteSpace: "nowrap" }}>
+          My LinkedIn
+        </a>
+        <a href="mailto:tursoderek@gmail.com" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", whiteSpace: "nowrap" }}>
+          Email Me
+        </a>
+      </div>
+    </details>
+  );
+}
+
+function WaitlistControls({
+  email,
+  setEmail,
+  submitted,
+  handleSubmit,
+}: {
+  email: string;
+  setEmail: (email: string) => void;
+  submitted: boolean;
+  handleSubmit: (e: React.FormEvent) => void;
+}) {
+  if (submitted) {
+    return (
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
+        <p style={{ fontSize: 18, color: T.white, fontWeight: 500, margin: 0 }}>You&apos;re on the list.</p>
+        <ContactMenu />
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%", maxWidth: 620, margin: "0 auto" }}>
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required
+        style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 6, padding: "14px 20px", fontSize: 15, color: T.white, fontFamily: "Inter, sans-serif", width: "100%", outline: "none" }} />
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+        <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", whiteSpace: "nowrap" }}>
+          Join the Waitlist
+        </button>
+        <ContactMenu />
+      </div>
+    </form>
+  );
+}
+
 function StaticTerminal({ minH = 320 }: { minH?: number }) {
   return (
     <div style={{ background: "rgba(8,9,10,0.92)", border: `1px solid ${T.border}`, borderRadius: 8, overflow: "hidden", minHeight: minH, display: "flex", flexDirection: "column" }}>
@@ -183,27 +235,7 @@ export default function J5() {
               We&apos;re building computer vision software for wrestling — detection, event tracking, match analytics, and team-level data. The infrastructure the sport has never had.
             </p>
             <div style={{ marginTop: submitted ? 72 : 40 }}>
-              {submitted ? (
-                <div style={{ display: "flex", gap: 12, justifyContent: "center", alignItems: "center", flexWrap: "wrap" }}>
-                  <p style={{ fontSize: 18, color: T.white, fontWeight: 500, margin: 0 }}>You&apos;re on the list.</p>
-                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                    My LinkedIn
-                  </a>
-                </div>
-              ) : (
-                <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                  <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required
-                      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 6, padding: "14px 20px", fontSize: 15, color: T.white, fontFamily: "Inter, sans-serif", width: isMobile ? "100%" : 280, outline: "none" }} />
-                    <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", whiteSpace: "nowrap" }}>
-                      Join the Waitlist
-                    </button>
-                  </form>
-                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                    My LinkedIn
-                  </a>
-                </div>
-              )}
+              <WaitlistControls email={email} setEmail={setEmail} submitted={submitted} handleSubmit={handleSubmit} />
             </div>
           </div>
           {!isMobile ? (
@@ -399,27 +431,7 @@ export default function J5() {
               transition: "transform 0.3s ease",
               display: "flex", gap: 12, justifyContent: "center", alignItems: "center", flexWrap: "wrap",
             }}>
-              {submitted ? (
-                <>
-                  <p style={{ fontSize: 18, color: T.white, fontWeight: 500, margin: 0 }}>You&apos;re on the list.</p>
-                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                    My LinkedIn
-                  </a>
-                </>
-              ) : (
-                <>
-                  <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required
-                      style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 6, padding: "14px 20px", fontSize: 15, color: T.white, fontFamily: "Inter, sans-serif", width: isMobile ? "100%" : 280, outline: "none" }} />
-                    <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", whiteSpace: "nowrap" }}>
-                      Join the Waitlist
-                    </button>
-                  </form>
-                  <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: `1px solid rgba(255,255,255,0.3)`, borderRadius: 6, padding: "13px 23px", cursor: "pointer", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                    My LinkedIn
-                  </a>
-                </>
-              )}
+              <WaitlistControls email={email} setEmail={setEmail} submitted={submitted} handleSubmit={handleSubmit} />
             </div>
           </div>
         </div>
