@@ -102,8 +102,8 @@ const ROADMAP_TERMINAL_LINES = [
 
 function ContactMenu() {
   return (
-    <details style={{ position: "relative" }}>
-      <summary style={{ listStyle: "none", fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 6, padding: "13px 23px", cursor: "pointer", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+    <details style={{ position: "relative", width: "100%" }}>
+      <summary style={{ listStyle: "none", fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 6, padding: "14px 12px", cursor: "pointer", whiteSpace: "nowrap", display: "flex", width: "100%", alignItems: "center", justifyContent: "center" }}>
         Contact Me
       </summary>
       <div style={{ position: "absolute", zIndex: 10, right: 0, top: "calc(100% + 8px)", minWidth: 150, padding: 6, background: T.card, border: `1px solid ${T.border}`, borderRadius: 6, boxShadow: "0 12px 28px rgba(0,0,0,0.35)" }}>
@@ -139,12 +139,12 @@ function WaitlistControls({
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%", maxWidth: 620, margin: "0 auto" }}>
+    <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateRows: "auto auto", gap: 12, width: "100%", maxWidth: 620, margin: "0 auto" }}>
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" required
         style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 6, padding: "14px 20px", fontSize: 15, color: T.white, fontFamily: "Inter, sans-serif", width: "100%", outline: "none" }} />
-      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-        <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 24px", cursor: "pointer", whiteSpace: "nowrap" }}>
-          Join the Waitlist
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12, width: "100%" }}>
+        <button type="submit" style={{ fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.bg, background: T.white, border: "none", borderRadius: 6, padding: "14px 12px", cursor: "pointer", whiteSpace: "nowrap", width: "100%" }}>
+          Join Waitlist
         </button>
         <ContactMenu />
       </div>
