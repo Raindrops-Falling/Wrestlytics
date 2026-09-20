@@ -290,7 +290,7 @@ export default function J5() {
       <section style={{ position: "relative" }}>
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.92)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, padding: "96px 40px" }}>
-          <div style={{ ...sectionWrap, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "start" }}>
+          <div style={{ ...sectionWrap, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "center" }}>
             {/* left: heading + description */}
             <div data-reveal="up">
               <h2 style={{ fontSize: "clamp(32px,4.5vw,48px)", fontWeight: 510, letterSpacing: "-0.022em", lineHeight: 1.1, color: T.white, margin: "0 0 20px" }}>
@@ -367,7 +367,7 @@ export default function J5() {
       <section style={{ position: "relative", overflow: "hidden", minHeight: 400, display: "flex", alignItems: "center" }}>
         <div style={{ position: "absolute", inset: 0, background: "rgba(8,9,10,0.92)", pointerEvents: "none" }} />
         <div style={{ position: "relative", zIndex: 1, ...sectionWrap, padding: "96px 40px", width: "100%" }}>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? 40 : 64, alignItems: "center" }}>
             <div data-reveal="up" style={{ display: "flex", flexDirection: "column", gap: 16, order: isMobile ? 2 : 1 }}>
               {[
                 { num: "01", text: "Trained exclusively on wrestling footage" },
