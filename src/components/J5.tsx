@@ -260,7 +260,7 @@ export default function J5() {
             The sport that data forgot.
           </h2>
           <p style={{ fontSize: 16, color: T.muted, lineHeight: 1.75, maxWidth: 640, margin: "0 auto" }}>
-            In wrestling, athletes are in contact for the majority of a match. Standard pose estimation and tracking models were never designed for this — they lose identity, merge bounding boxes, and fail entirely when two bodies overlap. Wrestlytics built a detection model from the ground up, trained on wrestling footage and designed around the contact problem.
+            In wrestling, athletes are in contact for the majority of a match. Standard detection models are failing in these circumstances. We initially built a basic model for simple detection. Now we are looking for people to expand this initative.
           </p>
         </div>
       </section>
@@ -297,10 +297,10 @@ export default function J5() {
                 Detecting in Real Time.
               </h2>
               <p style={{ fontSize: 16, color: T.muted, lineHeight: 1.75, marginBottom: 20 }}>
-                Our first model processes wrestling video frame by frame — tracking both athletes through contact, overlap, and every occlusion event.
+                Now, we want to create analytics software that can detect complex scenarios in real time.
               </p>
               <p style={{ fontSize: 15, color: T.muted, lineHeight: 1.75 }}>
-                Identity is preserved across every frame transition. When athletes separate after a clinch, the model re-distinguishes both tracks without ambiguity.
+                We wish to create models that further the field of wrestling analytics, whether we want to evalulate moves, tendencies, or trends.
               </p>
             </div>
             {/* right: terminal */}
@@ -320,14 +320,14 @@ export default function J5() {
               Our Most Important Goals
             </h2>
             <p style={{ fontSize: 16, color: T.muted, lineHeight: 1.65, maxWidth: 520, margin: "0 auto" }}>
-              We didn&apos;t patch an existing model. We built for wrestling, which meant solving three specific technical problems.
+             We are building for wrestling, aiming to solve any technical problem we face.
             </p>
           </div>
           <div data-stagger style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap: 24 }}>
             {[
-              { Canvas: NodesCanvas, title: "Multi-body tracking", body: "Two independent tracks maintained simultaneously through every position and level of contact." },
-              { Canvas: LayersCanvas, title: "Occlusion resolution", body: "Identity doesn't break during stacking. The model holds both athletes through the event." },
-              { Canvas: (p: any) => <WireframeCanvas shape="cube" {...p} />, title: "Wrestling-specific training", body: "Built from wrestling footage, not adapted from other sports." },
+              { Canvas: NodesCanvas, title: "Multi-body tracking", body: "Seeing and recognizing both bodies in a wrestling match at all costs." },
+              { Canvas: LayersCanvas, title: "Deeper Insights", body: "Giving you the stats you need, without spending time to track them." },
+              { Canvas: (p: any) => <WireframeCanvas shape="cube" {...p} />, title: "Wrestling-specific training", body: "Providing the framework for improved coaching and training." },
             ].map(({ Canvas, title, body }) => (
               <div key={title} style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 12, overflow: "hidden" }}>
                 <div style={{ position: "relative", height: 200 }}>
@@ -352,7 +352,7 @@ export default function J5() {
               {"Detection is the foundation.\nEverything else\nbuilds here."}
             </h2>
             <p style={{ fontSize: 16, color: T.muted, lineHeight: 1.7, maxWidth: 440 }}>
-              Once you can reliably see every wrestler in every frame, the harder questions become answerable. We&apos;re building the next layer: match events, statistics, and team-level pattern analysis.
+              Once we can reliably see every wrestler in every frame, the real opportunity opens up: match events, performance metrics, and team-level insights that were previously impossible to capture at scale.
             </p>
           </div>
           {/* right: annotated video (the "associated video" from Detecting section) */}
@@ -383,13 +383,13 @@ export default function J5() {
             <div data-reveal="right" style={{ order: isMobile ? 1 : 2 }}>
               <p style={monoLabel}>OUR APPROACH</p>
               <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 510, letterSpacing: "-0.02em", lineHeight: 1.1, color: T.white, margin: "0 0 20px" }}>
-                We started at zero.
+                We built the foundation from the ground up.
               </h2>
               <p style={{ fontSize: 15, color: T.muted, lineHeight: 1.7, marginBottom: 16 }}>
-                Detection models built for soccer, football, and basketball weren&apos;t built for contact. We found that out the hard way. So we started from scratch, built training data specific to wrestling, and designed the architecture around the contact problem.
+                Wrestling is different from other sports because contact is constant, identity is hard to maintain, and the meaningful moments happen in the most chaotic frames. We started with wrestling-specific data, a contact-aware architecture, and a clear goal: build a system that understands the sport as it actually happens.
               </p>
               <p style={{ fontSize: 15, color: T.muted, lineHeight: 1.7 }}>
-                This is our first model. It does one thing. That&apos;s intentional.
+                We&apos;re building tools for the next generation of wrestling analytics, and we&apos;re looking to work with partners who want to shape what comes next.
               </p>
             </div>
           </div>
@@ -402,10 +402,10 @@ export default function J5() {
           <div data-reveal="up" style={{ padding: isMobile ? "64px 32px" : "96px 64px 96px 40px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <p style={monoLabel}>WHERE WE ARE</p>
             <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", fontWeight: 510, letterSpacing: "-0.02em", lineHeight: 1.1, color: T.white, margin: "0 0 20px" }}>
-              This is version one.
+              We&apos;re building the next layer.
             </h2>
             <p style={{ fontSize: 17, color: T.body, lineHeight: 1.7 }}>
-              We built the detection layer first. Everything else — event classification, match statistics, team-level patterns — is on the roadmap. We&apos;re building it alongside coaches and programs who want it to exist.
+              The detection layer is the foundation, but it&apos;s not the finish line. We&apos;re expanding into event classification, match analysis, and the kinds of patterns that help coaches and programs make better decisions in real time.
             </p>
           </div>
           <div data-reveal="up" style={{ position: "relative", overflow: "hidden", minHeight: isMobile ? 260 : 340, display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
@@ -423,7 +423,7 @@ export default function J5() {
             Wrestling Is Unsolved.
           </h2>
           <p style={{ fontSize: 17, color: T.muted, lineHeight: 1.65, marginTop: 20, marginBottom: 0 }}>
-            Join the advancement of wrestling.
+            That&apos;s the opportunity. We&apos;re building the tools to unlock it — and we&apos;re looking for the right partners to help shape what comes next.
           </p>
           <div style={{ marginTop: 40, minHeight: 60, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
             <div style={{
@@ -446,7 +446,7 @@ export default function J5() {
             <WrestlyticsLogo size={24} />
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", color: T.white }}>WRESTLYTICS</span>
           </div>
-          <span style={{ fontSize: 13, color: T.muted }}>© 2025 Wrestlytics</span>
+          <span style={{ fontSize: 13, color: T.muted }}>© 2026 Wrestlytics</span>
         </div>
       </footer>
     </div>
