@@ -110,7 +110,7 @@ function ContactMenu() {
         <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", whiteSpace: "nowrap" }}>
           My LinkedIn
         </a>
-        <a href="mailto:tursoderek@gmail.com" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", whiteSpace: "nowrap" }}>
+        <a href="mailto:wrestlyticsmail@gmail.com" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", whiteSpace: "nowrap" }}>
           Email Me
         </a>
       </div>
