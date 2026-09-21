@@ -371,7 +371,7 @@ export default function J5() {
             <div data-reveal="up" style={{ display: "flex", flexDirection: "column", gap: 16, order: isMobile ? 2 : 1 }}>
               {[
                 { num: "01", text: "Trained exclusively on wrestling footage" },
-                { num: "02", text: "Occlusion as the primary design constraint" },
+                { num: "02", text: "In-depth image labeling" },
                 { num: "03", text: "Tested on collegiate match video" },
               ].map((item) => (
                 <div key={item.num} style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 8, padding: "20px 24px", display: "flex", alignItems: "center", gap: 20 }}>
