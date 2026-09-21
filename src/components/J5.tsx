@@ -104,7 +104,7 @@ function ContactMenu() {
   return (
     <details style={{ position: "relative", width: "100%" }}>
       <summary style={{ listStyle: "none", fontFamily: "Inter, sans-serif", fontSize: 14, fontWeight: 600, color: T.white, background: "transparent", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 6, padding: "14px 12px", cursor: "pointer", whiteSpace: "nowrap", display: "flex", width: "100%", alignItems: "center", justifyContent: "center" }}>
-        Contact Me
+        Contact Us
       </summary>
       <div style={{ position: "absolute", zIndex: 10, right: 0, top: "calc(100% + 8px)", width: "100%", boxSizing: "border-box", padding: 6, background: T.card, border: `1px solid ${T.border}`, borderRadius: 6, boxShadow: "0 12px 28px rgba(0,0,0,0.35)" }}>
         <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", textAlign: "center", whiteSpace: "nowrap" }}>
