@@ -63,7 +63,7 @@ const monoLabel: React.CSSProperties = {
 };
 
 const sectionWrap: React.CSSProperties = { maxWidth: 1200, margin: "0 auto" };
-const linkedInUrl = "https://www.linkedin.com/in/derek-t-40779a354/";
+const linkedInUrl = "https://www.linkedin.com/company/wrestlytics/";
 const videoProps = {
   autoPlay: true,
   muted: true,
@@ -108,10 +108,10 @@ function ContactMenu() {
       </summary>
       <div style={{ position: "absolute", zIndex: 10, right: 0, top: "calc(100% + 8px)", width: "100%", boxSizing: "border-box", padding: 6, background: T.card, border: `1px solid ${T.border}`, borderRadius: 6, boxShadow: "0 12px 28px rgba(0,0,0,0.35)" }}>
         <a href={linkedInUrl} target="_blank" rel="noreferrer" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", textAlign: "center", whiteSpace: "nowrap" }}>
-          My LinkedIn
+          Our LinkedIn
         </a>
         <a href="mailto:wrestlyticsmail@gmail.com" style={{ display: "block", padding: "10px 12px", color: T.white, fontFamily: "Inter, sans-serif", fontSize: 14, textDecoration: "none", textAlign: "center", whiteSpace: "nowrap" }}>
-          Email Me
+          Email Us
         </a>
       </div>
     </details>
